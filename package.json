@@ -1,0 +1,29 @@
+{
+  "name": "locate-satellite",
+  "version": "0.0.1",
+  "description": "A simple module to get a satellite location",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/gjunkie/locate-satellite.git"
+  },
+  "author": "Freddie Carthy",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/gjunkie/locate-satellite/issues"
+  },
+  "homepage": "https://github.com/gjunkie/locate-satellite",
+  "devDependencies": {
+    "chai": "^1.9.1",
+    "grunt-mocha-test": "^0.12.0"
+  },
+  "dependencies": {
+    "grunt": "^0.4.5",
+    "request": "^2.44.0",
+    "through2": "^0.6.2",
+    "wreck": "^5.0.1"
+  }
+}
