@@ -16,7 +16,23 @@ var options = {
   api: https://api.wheretheiss.at/v1/satellites/ //default
   rate: 1000 //default, in milliseconds
 }
+
+// returns an object stream of location data
 var satellite = new Satellite(25544, options);
+```
+
+You can also get the difference in latitude and longitude since the last location
+```
+var satellite = new Satellite.Satellite(25544, { rate: 1000 });
+
+// returns the change in location since the last
+var location = new Satellite.LocationStream();
+
+satellite.pipe(location).pipe(through.obj(function(chunk, enc, callback) {
+  // chunk is an object with latitude and longitude change
+  doSomethingWith(chunk);
+  callback();
+}));
 ```
   
 ###MIT License (MIT)
