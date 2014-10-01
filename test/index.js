@@ -4,16 +4,13 @@ var Satellite = require('../');
 
 describe('satellite', function() {
 
-  it('should get data from api', function(done) {
+  it('data should be ok', function(done) {
     var satellite = new Satellite.Satellite(25544, { rate: 1000 });
     satellite.pipe(through.obj(function(chunk, enc, callback) {
-      if (chunk) {
-        chunk.should.be.a('object');
-        //console.log(chunk);
-        //var location = new Satellite.LocationStream(chunk);
-        this.emit('close');
-        done();
-      }
+      chunk.should.be.ok;
+      chunk.should.be.a('object');
+      this.emit('close');
+      done();
       callback();
     }));
   });
@@ -22,11 +19,10 @@ describe('satellite', function() {
     var satellite = new Satellite.Satellite(25544, { rate: 1000 });
     var id = 25544;
     satellite.pipe(through.obj(function(chunk, enc, callback) {
-      if (chunk) {
-        chunk.id.should.equal(id);
-        this.emit('close');
-        done();
-      }
+      chunk.id.should.be.ok;
+      chunk.id.should.equal(id);
+      this.emit('close');
+      done();
       callback();
     }));
   });
@@ -34,12 +30,11 @@ describe('satellite', function() {
   it('data should have latitude and longitude', function(done) {
     var satellite = new Satellite.Satellite(25544, { rate: 1000 });
     satellite.pipe(through.obj(function(chunk, enc, callback) {
-      if (chunk) {
-        chunk.latitude.should.be.a('number');
-        chunk.longitude.should.be.a('number');
-        this.emit('close');
-        done();
-      }
+      chunk.id.should.be.ok;
+      chunk.latitude.should.be.a('number');
+      chunk.longitude.should.be.a('number');
+      this.emit('close');
+      done();
       callback();
     }));
   });
@@ -54,32 +49,30 @@ describe('satellite', function() {
 
 describe('location', function() {
 
-  it('should stream location data', function(done) {
-    this.timeout(3000);
-    var location = new Satellite.LocationStream();
+  it('change data should be streamed', function(done) {
+    this.timeout(3500);
     var satellite = new Satellite.Satellite(25544, { rate: 1000 });
+    var location = new Satellite.LocationStream();
     satellite.pipe(location).pipe(through.obj(function(chunk, enc, callback) {
-      if (chunk) {
-        chunk.latitude_delta.should.be.a('number');
-        chunk.longitude_delta.should.be.a('number');
-        this.emit('close');
-        done();
-      }
+      chunk.should.be.ok;
+      chunk.should.be.a('object');
+      this.emit('close');
+      done();
       callback();
     }));
   });
 
-  it('should have delta on every request', function(done) {
-    this.timeout(3000);
-    var location = new Satellite.LocationStream();
+  it('data should have delta on every request', function(done) {
+    this.timeout(3500);
     var satellite = new Satellite.Satellite(25544, { rate: 1000 });
+    var location = new Satellite.LocationStream();
+    var count = 0;
     satellite.pipe(location).pipe(through.obj(function(chunk, enc, callback) {
-      if (chunk) {
-        chunk.latitude_delta.should.not.equal(0);
-        chunk.longitude_delta.should.not.equal(0);
-        this.emit('close');
-        done();
-      }
+      chunk.should.be.ok;
+      chunk.latitude_delta.should.not.equal(0);
+      chunk.longitude_delta.should.not.equal(0);
+      this.emit('close');
+      done();
       callback();
     }));
   });

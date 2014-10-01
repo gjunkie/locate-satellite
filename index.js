@@ -25,18 +25,16 @@ function Satellite(id, options) {
   this.id = id || 25544;
   this.options.api = this.options.api || 'https://api.wheretheiss.at/v1/satellites/' + this.id;
   this.options.rate = options.rate || 1000;
-  this.options.objectMode = true;
 
   // prevent back-to-back requests faster than 1 second
   if (options.rate < 1000) {
     return new Error('rate must be at least 1000 milliseconds');
   }
 
-  this._fetchData(this.options.api);
-
   return this;
 }
 
+// let Satellite inherit
 util.inherits(Satellite, Stream.Readable);
 
 /**
@@ -45,38 +43,30 @@ util.inherits(Satellite, Stream.Readable);
 Satellite.prototype._fetchData = function() {
   var self = this;
 
-  // make sure we only run 1 request at a time
-  if (!this.running) {
-    request({uri: self.options.api, strictSSL: false}, function(error, response, data) {
-      if (response.statusCode !== 200) {
-        self.stop();
-        return new Error(data.error);
-      }
-      var result = JSON.parse(data);
-      self.push(result);
-      self._finished();
-    });
-  }
-}
-
-/**
- * Finished streaming data, set the timer 
- */
-Satellite.prototype._finished = function() {
-  this.running = false;
-
-  var self = this;
-  this.timer = setTimeout(function(){
-    self.running = true;
-    self._fetchData();
-  }, this.options.rate);
+  request({uri: self.options.api, strictSSL: false}, function(error, response, data) {
+    // if we get an error back, stop the stream
+    if (response.statusCode !== 200) {
+      self.stop();
+      return new Error(data.error);
+    }
+    var result = JSON.parse(data);
+    self.push(result);
+  });
 }
 
 /**
  * Set the _read method
  */
 Satellite.prototype._read = function () {
-  // do something
+  // make sure we only run 1 request at a time
+  if (!this.running) {
+    var self = this;
+    this.running = true;
+    this.timer = setTimeout(function(){
+      self._fetchData();
+      self.running = false;
+    }, this.options.rate);
+  }
 }
 
 /**
@@ -84,6 +74,7 @@ Satellite.prototype._read = function () {
  */
 Satellite.prototype.stop = function () {
   clearTimeout(this.timer);
+  this.running = false;
   this.push(null);
 }
 
@@ -93,9 +84,10 @@ Satellite.prototype.stop = function () {
  */
 function LocationStream() {
   Stream.Transform.call(this, { objectMode: true });
-
   return this;
 }
+
+// let LocationStream inherit
 util.inherits(LocationStream, Stream.Transform);
 
 /**
