@@ -3,15 +3,21 @@ locate-satellite
 
 Retrieve satellite location data from [wheretheiss.at].
 
+###Installation
+
+```
+npm install locate-satellite
+```
+
 ###Usage
 
-  ```
-  var options = {
-    api: https://api.wheretheiss.at/v1/satellites/ //default
-    rate: 1000 //default, in milliseconds
-  }
-  var satellite = new Satellite(25544, options);
-  ```
+```
+var options = {
+  api: https://api.wheretheiss.at/v1/satellites/ //default
+  rate: 1000 //default, in milliseconds
+}
+var satellite = new Satellite(25544, options);
+```
   
 ###MIT License (MIT)
 
