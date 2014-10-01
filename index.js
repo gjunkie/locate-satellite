@@ -45,6 +45,7 @@ Satellite.prototype._fetchData = function() {
 
   request({uri: self.options.api, strictSSL: false}, function(error, response, data) {
     // if we get an error back, stop the stream
+    // TODO: handle specific errors rather than blanket
     if (response.statusCode !== 200) {
       self.stop();
       return new Error(data.error);
@@ -98,6 +99,7 @@ util.inherits(LocationStream, Stream.Transform);
  * @param callback: function, callback function
  */
 LocationStream.prototype._transform = function(chunk, encoding, callback){
+  // only calculate change in location if we have an old result to compare to
   if (this.oldResult) {
     var timeDelta = (chunk.timestamp - this.oldResult.timestamp)/1000;
     var delta = {
@@ -105,6 +107,7 @@ LocationStream.prototype._transform = function(chunk, encoding, callback){
       longitude_delta: (chunk.longitude - this.oldResult.longitude) / timeDelta
     }
 
+    // stream data only if there is a change in location
     if (delta.latitude_delta !== 0 && delta.longitude_delta !== 0) {
       this.push(delta);
     }
