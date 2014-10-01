@@ -23,7 +23,6 @@
   "dependencies": {
     "grunt": "^0.4.5",
     "request": "^2.44.0",
-    "through2": "^0.6.2",
-    "wreck": "^5.0.1"
+    "through2": "^0.6.2"
   }
 }
